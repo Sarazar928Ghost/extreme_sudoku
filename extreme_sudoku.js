@@ -20,7 +20,7 @@ let usedNumber;
  * @param string type 'line', 'column' or 'grid'
  * @returns object {puzzle, resolved}
  */
-function extreme_sudoku(sizeGrid = 3, type = 'line', removeCase = 36)
+function extreme_sudoku(sizeGrid = 3, type = 'line', removeCase = 30)
 {
     if(sizeGrid <= 1){
         sizeGrid = 2;
@@ -127,8 +127,9 @@ function extreme_sudoku(sizeGrid = 3, type = 'line', removeCase = 36)
     }
     let blockRandom;
     let numRemoved;
-    let possibility = 9; // If 1 it's ok :)
-
+    let lineMemorie = 0;
+    let checked = new Array(9).fill(0); // If stay 1 case to 0 it's ok :)
+    let first, second;
     // remove case
     for(let i = 0; i < removeCase; i++)
     {
@@ -140,7 +141,84 @@ function extreme_sudoku(sizeGrid = 3, type = 'line', removeCase = 36)
             continue;
         }
         numRemoved = copy_tab[blockRandom][caseRandom];
-        //copy_tab[blockRandom][caseRandom] = '.';
+        copy_tab[blockRandom][caseRandom] = '.';
+
+        // AXE X
+        let block = blockRandom % 3;
+        if(block === 0){
+            first = 1;
+            second = 2;
+        }else if(block === 1){
+            first = 1;
+            second = -1;
+        }else if(block === 2){
+            first = -1;
+            second = -2;
+        }
+        for(let j = 0; j < 9; j++)
+        {
+            if(copy_tab[blockRandom + first][j] === numRemoved || 
+                copy_tab[blockRandom + second][j] === numRemoved)
+            {
+
+                lineMemorie = Math.floor((j+1) / 3);
+                if(lineMemorie === 3){
+                    lineMemorie = 2;
+                }
+                checked[lineMemorie * size] = 1;
+                checked[lineMemorie * size + 1] = 1;
+                checked[lineMemorie * size + 2] = 1;
+            }
+        }
+
+        // AXE Y
+        if(blockRandom >= 0 && blockRandom <= 2){
+            first = 3;
+            second = 6;
+        }else if(blockRandom >= 3 && blockRandom <= 5){
+            first = -3;
+            second = 3;
+        }else if(blockRandom >= 6 && blockRandom <= 8){
+            first = -3;
+            second = -6;
+        }
+        for(let j = 0; j < 9; j++)
+        {
+            if(copy_tab[blockRandom + first][j] === numRemoved || 
+                copy_tab[blockRandom + second][j] === numRemoved)
+            {
+                lineMemorie = j % 3;
+                checked[lineMemorie] = 1;
+                checked[lineMemorie + 3] = 1;
+                checked[lineMemorie + 6] = 1;
+            }
+        }
+        let indexof = checked.indexOf(0);
+        if(indexof !== 1)
+        {
+            for(let j = 0; j < 9; j++)
+            {
+                if(checked[j] === 0)
+                {
+                    if(copy_tab[blockRandom][j] !== '.')
+                    {
+                        --indexof;
+                        if(indexof === 1)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        if(indexof !== 1)
+        {
+            copy_tab[blockRandom][caseRandom] = numRemoved;
+            --i;
+        }
+
+        checked = new Array(9).fill(0);
 
         
     }
