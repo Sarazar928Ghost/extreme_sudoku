@@ -1,0 +1,27 @@
+{
+  "name": "extreme_sudoku",
+  "version": "1.0.0",
+  "description": "Merci à MAD5D de m'avoir réveillé <3",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sarazar928Ghost/extreme_sudoku.git"
+  },
+  "keywords": [],
+  "author": "K. Kevin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Sarazar928Ghost/extreme_sudoku/issues"
+  },
+  "homepage": "https://github.com/Sarazar928Ghost/extreme_sudoku#readme",
+  "devDependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^2.0.7",
+    "socket.io": "^4.0.0"
+  },
+  "dependencies": {}
+}

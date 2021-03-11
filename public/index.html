@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <title>Document</title>
+</head>
+<body>
+    <div id="sudoku"></div>
+    <script src="/socket.io/socket.io.js" defer></script>
+    <script defer>
+        window.addEventListener("DOMContentLoaded", (event) => {
+            let xhr = new XMLHttpRequest();
+
+            xhr.open('GET', 'getTab', true);
+
+            xhr.onload = function () {
+                let datas = JSON.parse(JSON.parse(this.responseText));
+                const tab = datas.tab;
+                const size = datas.size;
+                const square = size*size;
+                let sudoku = document.getElementById('sudoku');
+                // Generate the grid html with value of the tab format grid
+                for(let i = 0; i < square; i++)
+                {
+                    let div = document.createElement('div');
+                    div.className = 'block_case';
+
+                    for(let j = 0; j < square; j++)
+                    {
+                        let case_div = document.createElement('div');
+                        case_div.className = 'case';
+                        case_div.innerText = tab[i][j];
+                        div.appendChild(case_div);
+                    }
+
+                    sudoku.appendChild(div);
+                }
+            }
+            
+            xhr.send();
+        });        
+    </script>
+</body>
+</html>

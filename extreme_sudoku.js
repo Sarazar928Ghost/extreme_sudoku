@@ -1,22 +1,34 @@
-// node testAlgoSudoku
+// Created by K. Kevin :)
 
 let tab;
-let number = 0;
-let line = 0;
+let number; // generate random
+let line;
 let size;
-let checkLine = 0;
-let impossible = 0;
-let recommencer = 0;
+let checkLine;
+let impossible;
+let undo;
 let square;
 let usedNum;
 let usedNumber;
 
-
-function extreme_sudoku(sizeGrid = 3)
+/**
+ * Generate the grid
+ * puzzle = The grid with hole
+ * resolved = The full grid
+ * 
+ * @param int sizeGrid 2 , 3 or 4
+ * @param string type 'line', 'column' or 'grid'
+ * @returns object {puzzle, resolved}
+ */
+function extreme_sudoku(sizeGrid = 3, type = 'line', removeCase = 36)
 {
     if(sizeGrid <= 1){
         sizeGrid = 2;
     }
+    line = 0;
+    checkLine = 0;
+    impossible = 0;
+    undo = 0;
     size = sizeGrid;
     square = size * size;
     let multiplicator = size >= 3 ? size - 3 + 1 : 1;
@@ -44,19 +56,27 @@ function extreme_sudoku(sizeGrid = 3)
         number = getRandomInt();
         for(let j = checkLine; j > -1; j--){
             // Si il est bloqué sur une ligne , il va retourné sur celle d'au dessus.
-            if(recommencer > 75 && line > 1)
+            if(undo > 75 && line > multiplicator)
             {
                 resetNumberUsed();
-                recommencer = 0;
+                undo = 0;
                 i = reset(i) - square;
                 line = Math.floor(i / square);
                 tab[line] = new Array(square).fill(0);
+
+                if(multiplicator >= 2){
+                    i -= square;
+                    line = Math.floor(i / square);
+                    tab[line] = new Array(square).fill(0);
+                }
+                
+
                 checkLine = line - 1;
                 j = checkLine + 1;
                 continue;
             }
             // Si il bloque sur une ligne on la supprime et recommence
-            if(impossible >= 155)
+            if(impossible >= 155 * multiplicator)
             {
                 i = reset(i);
                 j = checkLine + 1;
@@ -96,8 +116,36 @@ function extreme_sudoku(sizeGrid = 3)
         impossible = 0;
     }
 
+    let copy_tab = createTabFormatGrid();
 
-    return createTabFormatGrid();
+    // Remove one case by block
+    let caseRandom;
+    for(let i = 0; i < 9; i++)
+    {
+        caseRandom = randomInt(8);
+        copy_tab[i][caseRandom] = '.';
+    }
+    let blockRandom;
+    let numRemoved;
+    let possibility = 9; // If 1 it's ok :)
+
+    // remove case
+    for(let i = 0; i < removeCase; i++)
+    {
+        blockRandom = randomInt(8);
+        caseRandom = randomInt(8);
+        if(copy_tab[blockRandom][caseRandom] === '.')
+        {
+            --i;
+            continue;
+        }
+        numRemoved = copy_tab[blockRandom][caseRandom];
+        //copy_tab[blockRandom][caseRandom] = '.';
+
+        
+    }
+
+    return {puzzle: copy_tab, resolved: copy_tab};
 }
 
 /**
@@ -108,17 +156,17 @@ function extreme_sudoku(sizeGrid = 3)
  */
 function createTabFormatGrid()
 {
-    // Create copy tab
     let copy_tab = new Array(square);
     let copy_case;
     let done;
     let next;
     let index = 0;
+    let X, Y;
     for(let k = 0; k < square; k+=size){
-        copy_case = new Array(square);
         if(done === square){
             copy_tab[index++] = copy_case;
         }
+        copy_case = new Array(square);
         done = 0;
         next = 0;
         for(let i = 0; i < square; i++)
@@ -132,14 +180,15 @@ function createTabFormatGrid()
                 ++next;
             }
             for(let j = 0; j < size; j++){
-                copy_case[done++] = tab[i - next * size + k][j + next * size];
+                X = j + next * size;
+                Y = i - next * size + k;
+                copy_case[done++] = tab[Y][X];
             }
         }
     }
     if(done === square){
-        copy_tab[index++] = copy_case;
+        copy_tab[index] = copy_case;
     }
-
     return copy_tab;
 }
 
@@ -155,7 +204,7 @@ function resetNumberUsed(){
 function reset(i)
 {
     impossible = 0;
-    ++recommencer;
+    ++undo;
     resetNumberUsed();
     tab[line] = new Array(square).fill(0);
     number = getRandomInt();
