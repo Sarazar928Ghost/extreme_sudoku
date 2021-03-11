@@ -131,7 +131,7 @@ function extreme_sudoku(sizeGrid = 3, type = 'line', removeCase = 30)
     let checked = new Array(9).fill(0); // If stay 1 case to 0 it's ok :)
     let first, second;
     // remove case
-    for(let i = 0; i < removeCase; i++)
+    for(let i = 0; i < 20; i++)
     {
         blockRandom = randomInt(8);
         caseRandom = randomInt(8);
@@ -193,31 +193,37 @@ function extreme_sudoku(sizeGrid = 3, type = 'line', removeCase = 30)
                 checked[lineMemorie + 6] = 1;
             }
         }
-        let indexof = checked.indexOf(0);
-        if(indexof !== 1)
+        let numberOfZero = 0;
+        for(let j = 0; j < 9; j++)
         {
+            if(checked[j] === 0)
+            {
+                ++numberOfZero;
+            }
+        }
+        if(numberOfZero !== 1)
+        {
+            let numberOfPoint = 0;
             for(let j = 0; j < 9; j++)
             {
-                if(checked[j] === 0)
+                if(copy_tab[blockRandom][j] === '.')
                 {
-                    if(copy_tab[blockRandom][j] !== '.')
-                    {
-                        --indexof;
-                        if(indexof === 1)
-                        {
-                            break;
-                        }
-                    }
+                    ++numberOfPoint;
                 }
+            }
+
+            if(numberOfZero - numberOfPoint + 1 === 1)
+            {
+                numberOfZero = 1;
             }
         }
 
-        if(indexof !== 1)
+        if(numberOfZero !== 1)
         {
             copy_tab[blockRandom][caseRandom] = numRemoved;
             --i;
         }
-
+        console.log(copy_tab);
         checked = new Array(9).fill(0);
 
         

@@ -33,7 +33,10 @@
                     {
                         let case_div = document.createElement('div');
                         case_div.className = 'case';
-                        case_div.innerText = tab[i][j];
+                        if(tab[i][j] !== '.')
+                        {
+                            case_div.innerText = tab[i][j];
+                        }
                         div.appendChild(case_div);
                     }
 
