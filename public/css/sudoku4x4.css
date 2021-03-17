@@ -2,7 +2,6 @@
     display: grid;
     grid-template-columns: 160px 160px 160px 160px;
     grid-template-rows: 160px 160px 160px 160px;
-    margin: 20px;
 }
 .block_case{
     outline: 2px solid black;
