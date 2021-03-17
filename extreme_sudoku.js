@@ -1,7 +1,5 @@
 // Created by K. Kevin :)
 
-const { json } = require("express");
-
 let sudoku;
 let number; // generate random
 let line;
