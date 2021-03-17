@@ -128,11 +128,21 @@ function holeArraySudoku(copy_array)
 {
     // Retire ${square} case au total
     firstHoles(copy_array);
-    
+    // Valeurs retiré de la grille sudoku
+    let valueRemovedNumber = [];
     let currentBlock = new Array(square).fill(0);
     let blockX, blockY;
-    for(let value = 1; value < square + 1; value++) // Parcours chaque valeur
+    for(let i = 0; i < square; i++) // Parcours chaque valeur
     {
+        // Random pour les nombres a enlever
+        let value = randomInt(square);
+        value = value === 0 ? 1 : value;
+        if(valueRemovedNumber.includes(value))
+        {
+            --i;
+            continue;
+        }
+        valueRemovedNumber.push(value);
         for(let positionOfBlock = 0; positionOfBlock < square; positionOfBlock++) // Parcours chaque block
         {
             let indexOf = copy_array[positionOfBlock].indexOf(value);

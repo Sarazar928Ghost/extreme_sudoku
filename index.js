@@ -12,7 +12,7 @@ app.get('/', function(req, res) {
 });
 
 app.get('/getArraySudoku', function(req, res) {
-    arraySudoku = extreme_sudoku().resolved;
+    arraySudoku = extreme_sudoku(size).resolved;
     res.json(JSON.stringify({arraySudoku, size}));
 });
 
