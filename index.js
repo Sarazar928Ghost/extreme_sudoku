@@ -5,15 +5,15 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const path = require('path');
 const size = 3;
-let tab;
+let arraySudoku;
 app.use(express.static(__dirname + '/public'));
 app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.get('/getTab', function(req, res) {
-    tab = extreme_sudoku().resolved;
-    res.json(JSON.stringify({tab, size}));
+app.get('/getArraySudoku', function(req, res) {
+    arraySudoku = extreme_sudoku().resolved;
+    res.json(JSON.stringify({arraySudoku, size}));
 });
 
 http.listen(3000, function() {

@@ -11,19 +11,19 @@
     <div id="sudoku"></div>
     <script src="/socket.io/socket.io.js" defer></script>
     <script defer>
-        window.addEventListener("DOMContentLoaded", (event) => {
+        function getArraySudoku()
+        {
             let xhr = new XMLHttpRequest();
 
-            xhr.open('GET', 'getTab', true);
+            xhr.open('GET', 'getArraySudoku', true);
 
             xhr.onload = function () {
                 let datas = JSON.parse(JSON.parse(this.responseText));
-                const tab = datas.tab;
-                console.log(tab);
+                const arraySudoku = datas.arraySudoku;
                 const size = datas.size;
                 const square = size*size;
                 let sudoku = document.getElementById('sudoku');
-                // Generate the grid html with value of the tab format grid
+                // Generate the grid html with value of the sudoku format grid
                 for(let i = 0; i < square; i++)
                 {
                     let div = document.createElement('div');
@@ -33,9 +33,9 @@
                     {
                         let case_div = document.createElement('div');
                         case_div.className = 'case';
-                        if(tab[i][j] !== '.')
+                        if(arraySudoku[i][j] !== '.')
                         {
-                            case_div.innerText = tab[i][j];
+                            case_div.innerText = arraySudoku[i][j];
                         }
                         div.appendChild(case_div);
                     }
@@ -43,9 +43,11 @@
                     sudoku.appendChild(div);
                 }
             }
-            
+
             xhr.send();
-        });        
+        }
+
+        window.onload = getArraySudoku;    
     </script>
 </body>
 </html>

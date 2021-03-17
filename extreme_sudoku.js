@@ -1,6 +1,8 @@
 // Created by K. Kevin :)
 
-let tab;
+const { json } = require("express");
+
+let sudoku;
 let number; // generate random
 let line;
 let size;
@@ -32,10 +34,10 @@ function extreme_sudoku(sizeGrid = 3, type = 'line', removeCase = 30)
     size = sizeGrid;
     square = size * size;
     let multiplicator = size >= 3 ? size - 3 + 1 : 1;
-    tab = new Array(square);
+    sudoku = new Array(square);
     for(let i = 0; i < size * size; i++)
     {
-        tab[i] = new Array(square).fill(0);
+        sudoku[i] = new Array(square).fill(0);
     }
     usedNum = square;
     usedNumber = new Array(square).fill(0);
@@ -43,11 +45,11 @@ function extreme_sudoku(sizeGrid = 3, type = 'line', removeCase = 30)
     for(let i = 0; i < square; i++)
     {
         number = getRandomInt();
-        if(tab[line].includes(number)){
+        if(sudoku[line].includes(number)){
             --i;
             continue;
         }
-        tab[line][i] = number;
+        sudoku[line][i] = number;
     }
     
     for(let i = square; i < square*square; i++){
@@ -62,12 +64,12 @@ function extreme_sudoku(sizeGrid = 3, type = 'line', removeCase = 30)
                 undo = 0;
                 i = reset(i) - square;
                 line = Math.floor(i / square);
-                tab[line] = new Array(square).fill(0);
+                sudoku[line] = new Array(square).fill(0);
 
                 if(multiplicator >= 2){
                     i -= square;
                     line = Math.floor(i / square);
-                    tab[line] = new Array(square).fill(0);
+                    sudoku[line] = new Array(square).fill(0);
                 }
                 
 
@@ -83,7 +85,7 @@ function extreme_sudoku(sizeGrid = 3, type = 'line', removeCase = 30)
                 continue;
             }
             // Si le numéro juste au dessus est le même ou bien si le numéro est déjà dans la ligne
-            if(tab[line].includes(number) || tab[j][i % square] === number){
+            if(sudoku[line].includes(number) || sudoku[j][i % square] === number){
                 ++impossible;
                 number = getRandomInt();
                 j = checkLine + 1;
@@ -93,12 +95,12 @@ function extreme_sudoku(sizeGrid = 3, type = 'line', removeCase = 30)
             // PS : Le nombre n'a pas encore été posé. 
             const X = Math.floor((i % square) / size) * size; // Block axe X
             const Y = Math.floor(i / square / size) * size; // Block axe Y
-            // tab[Y][X] === number
+            // sudoku[Y][X] === number
             // On vérifie tout le block si il n'y a pas déjà le nombre
             for(let k = 0; k < square; k++){
                 const ky = Math.floor(k/size) + Y;
                 const kx = X + (k % size);
-                if(tab[ky][kx] === number){
+                if(sudoku[ky][kx] === number){
                     ++impossible;
                     number = getRandomInt();
                     j = checkLine + 1;
@@ -107,7 +109,7 @@ function extreme_sudoku(sizeGrid = 3, type = 'line', removeCase = 30)
             }
         }
         // Tout s'est bien passé , on ajoute le nombre et reset la variable impossible
-        tab[line][i % square] = number;
+        sudoku[line][i % square] = number;
         if(i%square === 0)
         {
             resetNumberUsed();
@@ -116,131 +118,128 @@ function extreme_sudoku(sizeGrid = 3, type = 'line', removeCase = 30)
         impossible = 0;
     }
 
-    let copy_tab = createTabFormatGrid();
+    let copy_array = getGridArraySudoku();
+    let array_with_holes = holeArraySudoku(copy_array);
 
-    // Remove one case by block
-    let caseRandom;
-    for(let i = 0; i < 9; i++)
+    return {puzzle: array_with_holes, resolved: copy_array};
+}
+
+function holeArraySudoku(copy_array)
+{
+    // Retire ${square} case au total
+    firstHoles(copy_array);
+    
+    let currentBlock = new Array(square).fill(0);
+    let blockX, blockY;
+    for(let value = 1; value < square + 1; value++) // Parcours chaque valeur
     {
-        caseRandom = randomInt(8);
-        copy_tab[i][caseRandom] = '.';
-    }
-    let blockRandom;
-    let numRemoved;
-    let lineMemorie = 0;
-    let checked = new Array(9).fill(0); // If stay 1 case to 0 it's ok :)
-    let first, second;
-    // remove case
-    for(let i = 0; i < 20; i++)
-    {
-        blockRandom = randomInt(8);
-        caseRandom = randomInt(8);
-        if(copy_tab[blockRandom][caseRandom] === '.')
+        for(let positionOfBlock = 0; positionOfBlock < square; positionOfBlock++) // Parcours chaque block
         {
-            --i;
-            continue;
-        }
-        numRemoved = copy_tab[blockRandom][caseRandom];
-        copy_tab[blockRandom][caseRandom] = '.';
+            let indexOf = copy_array[positionOfBlock].indexOf(value);
+            if(indexOf !== -1)
+            {
+                blockY = Math.floor(positionOfBlock / size); // Block sur l'axe Y
+                blockX = positionOfBlock % size; // Block sur l'axe X
 
-        // AXE X
-        let block = blockRandom % 3;
-        if(block === 0){
-            first = 1;
-            second = 2;
-        }else if(block === 1){
-            first = 1;
-            second = -1;
-        }else if(block === 2){
-            first = -1;
-            second = -2;
-        }
-        for(let j = 0; j < 9; j++)
-        {
-            if(copy_tab[blockRandom + first][j] === numRemoved || 
-                copy_tab[blockRandom + second][j] === numRemoved)
-            {
-
-                lineMemorie = Math.floor((j+1) / 3);
-                if(lineMemorie === 3){
-                    lineMemorie = 2;
-                }
-                checked[lineMemorie * size] = 1;
-                checked[lineMemorie * size + 1] = 1;
-                checked[lineMemorie * size + 2] = 1;
-            }
-        }
-
-        // AXE Y
-        if(blockRandom >= 0 && blockRandom <= 2){
-            first = 3;
-            second = 6;
-        }else if(blockRandom >= 3 && blockRandom <= 5){
-            first = -3;
-            second = 3;
-        }else if(blockRandom >= 6 && blockRandom <= 8){
-            first = -3;
-            second = -6;
-        }
-        for(let j = 0; j < 9; j++)
-        {
-            if(copy_tab[blockRandom + first][j] === numRemoved || 
-                copy_tab[blockRandom + second][j] === numRemoved)
-            {
-                lineMemorie = j % 3;
-                checked[lineMemorie] = 1;
-                checked[lineMemorie + 3] = 1;
-                checked[lineMemorie + 6] = 1;
-            }
-        }
-        let numberOfZero = 0;
-        for(let j = 0; j < 9; j++)
-        {
-            if(checked[j] === 0)
-            {
-                ++numberOfZero;
-            }
-        }
-        if(numberOfZero !== 1)
-        {
-            let numberOfPoint = 0;
-            for(let j = 0; j < 9; j++)
-            {
-                if(copy_tab[blockRandom][j] === '.')
+                for(let axeY = blockX; axeY < square; axeY+=size)
                 {
-                    ++numberOfPoint;
+                    if(axeY !== positionOfBlock)
+                    {
+                        indexOf = copy_array[axeY].indexOf(value);
+                        if(indexOf !== -1)
+                        {
+                            for(let m = indexOf % size; m < square; m+=size)
+                            {
+                                currentBlock[m] = 1;
+                            }
+                        }
+
+
+                    }
+                }
+                for(let axeX = blockY * size; axeX < blockY * size + size; axeX++)
+                {
+                    if(axeX !== positionOfBlock)
+                    {
+                        indexOf = copy_array[axeX].indexOf(value);
+                        if(indexOf !== -1)
+                        {
+                            for(let m = Math.floor(indexOf / size) * size; m < Math.floor(indexOf / size) * size + size; m++)
+                            {
+                                currentBlock[m] = 1;
+                            }
+                        }
+                    }
+                }
+                let numberOfZero = 0;
+                for(let m = 0; m < square; m++)
+                {
+                    if(currentBlock[m] === 0)
+                    {
+                        ++numberOfZero;
+                    }
+                }
+
+                indexOf = copy_array[positionOfBlock].indexOf(value);
+                if(numberOfZero !== 1){
+                    for(let m = 0; m < square; m++)
+                    {
+                        if(currentBlock[m] === 0 && indexOf !== m && copy_array[positionOfBlock][m] !== '.')
+                        {
+                            if(numberOfZero > 1)
+                            {
+                                --numberOfZero;
+                            }
+                            
+                        }
+                    }
+                }
+                
+                if(numberOfZero === 1)
+                {
+                    copy_array[positionOfBlock][currentBlock.indexOf(0)] = '.';
                 }
             }
-
-            if(numberOfZero - numberOfPoint + 1 === 1)
+            // Je reset de cette manière question performance niveau mémoire
+            for(let m = 0; m < square; m++)
             {
-                numberOfZero = 1;
+                currentBlock[m] = 0;   
             }
         }
-
-        if(numberOfZero !== 1)
-        {
-            copy_tab[blockRandom][caseRandom] = numRemoved;
-            --i;
-        }
-        console.log(copy_tab);
-        checked = new Array(9).fill(0);
-
-        
     }
 
-    return {puzzle: copy_tab, resolved: copy_tab};
+    return copy_array;
+}
+
+function firstHoles(copy_array)
+{
+        // Valeurs retiré de la grille sudoku
+        let valueRemoved = [];
+        // On retire un nombre par block , chaque nombre est différent
+        for(let i = 0; i < square; i++)
+        {
+            for(let j = 1; j < square + 1; j++) // test toute les valeurs possible
+            {
+                if(!valueRemoved.includes(j))
+                {
+                    let indexOf = copy_array[i].indexOf(j);
+                    copy_array[i][indexOf] = '.';
+                    valueRemoved.push(j);
+                    break; // Si trouvé on sort de la boucle
+                }
+            }
+        }
 }
 
 /**
  * One line = 1 block
- * Example : tab[0] == first block; tab[1] == second block
+ * Example : sudoku[0] == first block; sudoku[1] == second block
  * 
- * @returns sudoku tab format grid
+ * @returns sudoku array format grid
  */
-function createTabFormatGrid()
+function getGridArraySudoku()
 {
-    let copy_tab = new Array(square);
+    let copy_array = new Array(square);
     let copy_case;
     let done;
     let next;
@@ -248,7 +247,7 @@ function createTabFormatGrid()
     let X, Y;
     for(let k = 0; k < square; k+=size){
         if(done === square){
-            copy_tab[index++] = copy_case;
+            copy_array[index++] = copy_case;
         }
         copy_case = new Array(square);
         done = 0;
@@ -256,7 +255,7 @@ function createTabFormatGrid()
         for(let i = 0; i < square; i++)
         {
             if(done === square){
-                copy_tab[index++] = copy_case;
+                copy_array[index++] = copy_case;
                 done = 0;
             }
             if(i !== 0 && i % size === 0){
@@ -266,14 +265,14 @@ function createTabFormatGrid()
             for(let j = 0; j < size; j++){
                 X = j + next * size;
                 Y = i - next * size + k;
-                copy_case[done++] = tab[Y][X];
+                copy_case[done++] = sudoku[Y][X];
             }
         }
     }
     if(done === square){
-        copy_tab[index] = copy_case;
+        copy_array[index] = copy_case;
     }
-    return copy_tab;
+    return copy_array;
 }
 
 function resetNumberUsed(){
@@ -290,7 +289,7 @@ function reset(i)
     impossible = 0;
     ++undo;
     resetNumberUsed();
-    tab[line] = new Array(square).fill(0);
+    sudoku[line] = new Array(square).fill(0);
     number = getRandomInt();
     return i - (i % square);
 }
