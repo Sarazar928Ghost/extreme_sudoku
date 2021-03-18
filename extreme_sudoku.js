@@ -15,11 +15,14 @@ let holes;
 /**
  * Generate the array Sudoku
  * puzzle = The array Sudoku with hole
- * resolved = The full array Sudoku
+ * solved = The full array Sudoku
+ * holes = Number of holes in the sudoku
+ * Best holes score : 46
+ * Bad holes score : 30
  * 
  * @param int sizeOfTheSudoku 2 , 3 or 4
- * @param string type 'line', 'column' or 'grid'
- * @returns object {puzzle, resolved}
+ * @param string type 'line' or 'grid' ( Default is line )
+ * @returns object {puzzle, solved, holes}
  */
 function extreme_sudoku(sizeGrid = 3, type = 'line')
 {
@@ -126,7 +129,7 @@ function extreme_sudoku(sizeGrid = 3, type = 'line')
         array_with_holes = toLineArray(array_with_holes);
     }
 
-    return {puzzle: array_with_holes, resolved: copy_sudoku, holes};
+    return {puzzle: array_with_holes, solved: copy_sudoku, holes};
 }
 
 function toLineArray(array_with_holes)
@@ -149,6 +152,7 @@ function holeArraySudoku(copy_array)
     firstHoles(copy_array);
     // Valeurs retiré de la grille sudoku
     let valueRemovedNumber = [];
+    let valueRemovedBlock = [];
     let currentBlock = new Array(square).fill(0);
     let blockX, blockY;
     for(let i = 0; i < square; i++) // Parcours chaque valeur
@@ -162,8 +166,16 @@ function holeArraySudoku(copy_array)
             continue;
         }
         valueRemovedNumber.push(value);
-        for(let positionOfBlock = 0; positionOfBlock < square; positionOfBlock++) // Parcours chaque block
+        valueRemovedBlock = [];
+        for(let j = 0; j < square; j++) // Parcours chaque block
         {
+            let positionOfBlock = randomInt(square - 1);
+            if(valueRemovedBlock.includes(positionOfBlock))
+            {
+                --j;
+                continue;
+            }
+            valueRemovedBlock.push(positionOfBlock);
             let indexOf = copy_array[positionOfBlock].indexOf(value);
             if(indexOf !== -1)
             {

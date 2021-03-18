@@ -13,8 +13,7 @@ app.get('/', function(req, res) {
 
 app.get('/getArraySudoku', function(req, res) {
     sudoku = extreme_sudoku(size, 'grid');
-    console.log(sudoku.holes);
-    res.json(JSON.stringify({arraySudoku: sudoku.puzzle, size}));
+    res.json(JSON.stringify({arraySudoku: sudoku.puzzle, size, holes: sudoku.holes}));
 });
 
 http.listen(3000, function() {
