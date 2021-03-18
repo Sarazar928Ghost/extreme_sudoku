@@ -1,0 +1,21 @@
+@import 'variables';
+@import 'functions';
+#sudoku{
+    display: grid;
+    grid-template-columns: multiply(4, $widthCase * 4);
+    grid-template-rows: multiply(4, $widthCase * 4);
+}
+.block_case{
+    outline: 2px solid black;
+    display: grid;
+    grid-template-columns: multiply(4, $widthCase);
+    grid-template-rows: multiply(4, $widthCase);
+    width: fit-content;
+    color: black;
+}
+.case{
+    display: inline-block;
+    font-size: $fontSize;
+    text-align: center;
+    border: 1px solid black;
+}

@@ -1,0 +1,11 @@
+{
+    "version": 3,
+    "mappings": "AAEA,AAAA,OAAO,CAAA;EACH,OAAO,EAAE,IAAI;EACb,qBAAqB,EEIb,uBAAgB;EFHxB,kBAAkB,EEGV,uBAAgB;CFF3B;;AACD,AAAA,WAAW,CAAA;EACP,OAAO,EAAE,eAAe;EACxB,OAAO,EAAE,IAAI;EACb,qBAAqB,EEFb,mBAAgB;EFGxB,kBAAkB,EEHV,mBAAgB;EFIxB,KAAK,EAAE,WAAW;EAClB,KAAK,EAAE,KAAK;CACf;;AACD,AAAA,KAAK,CAAA;EACD,OAAO,EAAE,YAAY;EACrB,SAAS,EChBF,IAAI;EDiBX,UAAU,EAAE,MAAM;EAClB,MAAM,EAAE,eAAe;CAC1B",
+    "sources": [
+        "../sass/sudoku4x4.scss",
+        "../sass/_variables.scss",
+        "../sass/_functions.scss"
+    ],
+    "names": [],
+    "file": "sudoku4x4.css"
+}

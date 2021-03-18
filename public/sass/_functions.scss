@@ -1,0 +1,10 @@
+@function multiply($number, $variable) {
+    $result: "";
+    @for $i from 1 through $number {
+      $result: $result+$variable+"px";
+      @if($i != $number){
+            $result: $result+" ";
+    }
+    }
+    @return unquote($result);
+  }

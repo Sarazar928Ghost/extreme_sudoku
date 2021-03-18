@@ -1,19 +1,30 @@
-#sudoku{
-    display: grid;
-    grid-template-columns: 160px 160px 160px 160px;
-    grid-template-rows: 160px 160px 160px 160px;
+#sudoku {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 240px 240px 240px 240px;
+      grid-template-columns: 240px 240px 240px 240px;
+  -ms-grid-rows: 240px 240px 240px 240px;
+      grid-template-rows: 240px 240px 240px 240px;
 }
-.block_case{
-    outline: 2px solid black;
-    display: grid;
-    grid-template-columns: 40px 40px 40px 40px;
-    grid-template-rows: 40px 40px 40px 40px;
-    width: fit-content;
-    color: black;
+
+.block_case {
+  outline: 2px solid black;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 60px 60px 60px 60px;
+      grid-template-columns: 60px 60px 60px 60px;
+  -ms-grid-rows: 60px 60px 60px 60px;
+      grid-template-rows: 60px 60px 60px 60px;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  color: black;
 }
-.case{
-    display: inline-block;
-    font-size: 32px;
-    text-align: center;
-    border: 1px solid black;
+
+.case {
+  display: inline-block;
+  font-size: 48px;
+  text-align: center;
+  border: 1px solid black;
 }
+/*# sourceMappingURL=sudoku4x4.css.map */

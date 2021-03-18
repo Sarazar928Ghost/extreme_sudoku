@@ -10,7 +10,6 @@ let undo;
 let square;
 let usedNum;
 let usedNumber;
-let holes;
 
 /**
  * Generate the array Sudoku
@@ -23,7 +22,6 @@ let holes;
  */
 function extreme_sudoku(sizeGrid = 3, type = 'line')
 {
-    holes = 9;
     if(sizeGrid <= 1){
         sizeGrid = 2;
     }
@@ -34,7 +32,11 @@ function extreme_sudoku(sizeGrid = 3, type = 'line')
     size = sizeGrid;
     square = size * size;
     let multiplicator = size >= 3 ? size - 3 + 1 : 1;
-    sudoku = createArray2D(sudoku);
+    sudoku = new Array(square);
+    for(let i = 0; i < size * size; i++)
+    {
+        sudoku[i] = new Array(square);
+    }
     usedNum = square;
     usedNumber = new Array(square);
     // Generate the first line
@@ -114,25 +116,27 @@ function extreme_sudoku(sizeGrid = 3, type = 'line')
         impossible = 0;
     }
 
-    let copy_sudoku = getGridArraySudoku();
-    
-    let array_with_holes;
-    array_with_holes = createArray2D(array_with_holes, copy_sudoku);
-    array_with_holes = holeArraySudoku(array_with_holes);
+    let copy_array = getGridArraySudoku();
+    let array_with_holes = holeArraySudoku(copy_array);
 
     if(type === 'line')
     {
-        copy_sudoku = sudoku; // Sudoku de base est en format line
+        copy_array = sudoku;
+        console.log('La version grille : ');
+        console.log(array_with_holes);
         array_with_holes = toLineArray(array_with_holes);
     }
 
-    return {puzzle: array_with_holes, resolved: copy_sudoku, holes};
+    return {puzzle: array_with_holes, resolved: copy_array};
 }
 
 function toLineArray(array_with_holes)
 {
-    let array_with_holes_line;
-    array_with_holes_line = createArray2D(array_with_holes_line);
+    let array_with_holes_line = new Array(square);
+    for(let i = 0; i < square; i++)
+    {
+        array_with_holes_line[i] = new Array(square);
+    }
     for(let i = 0; i < square; i++)
     {
         for(let j = 0; j < square; j++)
@@ -227,7 +231,6 @@ function holeArraySudoku(copy_array)
                 if(numberOfZero === 1)
                 {
                     copy_array[positionOfBlock][currentBlock.indexOf(0)] = '.';
-                    ++holes;
                 }
             }
             // Je reset de cette manière question performance niveau mémoire
@@ -346,26 +349,7 @@ function getRandomInt() {
     return random == 0 ? 1 : random;
 }
 
-function createArray2D(array, copy = null)
-{
-    array = new Array(square);
-    for(let i = 0; i < square; i++)
-    {
-        array[i] = new Array(square);
-    }
-    if(copy !== null)
-    {
-        for(let i = 0; i < square; i++)
-        {
-            for(let j = 0; j < square; j++)
-            {
-                array[i][j] = copy[i][j];
-            }
-        }
-    }
 
-    return array;
-}
-
-
-module.exports = extreme_sudoku;
+let monTab = extreme_sudoku(3, 'line');
+console.log('La version line : ');
+console.log(monTab.puzzle);
