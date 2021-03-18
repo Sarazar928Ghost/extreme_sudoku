@@ -13,12 +13,12 @@ let usedNumber;
 let holes;
 
 /**
- * Generate the array Sudoku
- * puzzle = The array Sudoku with hole
- * solved = The full array Sudoku
- * holes = Number of holes in the sudoku
- * Best holes score : 46
- * Bad holes score : 30
+ * Generate the array Sudoku;;;
+ * puzzle = The array Sudoku with hole;;;
+ * solved = The full array Sudoku;;;
+ * holes = Number of holes in the sudoku;;;
+ * 3x3 Holes ( Best : 46 ; Bad : 30);;;
+ * 4x4 Holes ( Best : 118; Bad : 91)
  * 
  * @param int sizeOfTheSudoku 2 , 3 or 4
  * @param string type 'line' or 'grid' ( Default is line )
@@ -26,7 +26,7 @@ let holes;
  */
 function extreme_sudoku(sizeGrid = 3, type = 'line')
 {
-    holes = 9;
+    holes = square;
     if(sizeGrid <= 1){
         sizeGrid = 2;
     }

@@ -8,7 +8,7 @@
 }
 
 .block_case {
-  outline: 2px solid black;
+  outline: 4px solid black;
   display: -ms-grid;
   display: grid;
   -ms-grid-columns: 60px 60px;
